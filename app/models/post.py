@@ -19,6 +19,19 @@ class Post():
 
     def save_post(self):
         db.post.insert_one(self.__dict__)
+        return self
+
+    @staticmethod
+    # def delete_post(post):
+    #     db.post.delete_one(post)
+    def delete_post(post):
+        db.post.delete_one({"id": post["id"]})
+
+    @staticmethod
+    def find_post(id):
+        result = db.post.find_one({"id": int(id)})
+        return result
+
 
     def verify_title(self, title):
         if len(title) < 3:
@@ -37,8 +50,14 @@ class Post():
                 result = t['id']
         return(result+1)
 
+    @staticmethod
+    def serialize_id(data):
+        if type(data) is dict:
+            data.update({"_id": str(data["_id"])})
+        if type(data) is Post:
+            data._id = str(data._id)
 
-
+        return data
     
 
 # p = Post(
