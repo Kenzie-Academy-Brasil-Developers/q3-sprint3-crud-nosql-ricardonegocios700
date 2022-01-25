@@ -1,8 +1,7 @@
-from decimal import InvalidContext
-from xml.dom import InvalidCharacterErr
 import pymongo
 from datetime import date, datetime
-#__name__ = "post"
+
+
 client = pymongo.MongoClient("mongodb://localhost:27017")
 db = client["atividade9"]
 
@@ -34,7 +33,14 @@ class Post():
 
     @staticmethod
     def list_all():
-        result = db.post.find()
+        working = db.post.find()
+        #TODO não consegui usar o serialize_id() no controller
+        #TODO mantinha como um objeto do mongo e não interava no controller
+        #TODO https://github.com/Kenzie-Academy-Brasil-Developers/q3-demos-turma7/blob/master/sprint3/demo7/app/models/dev_model.py
+        result = []
+        for w in working:
+            w.update({"_id": str(w["_id"])})
+            result.append(w)
         return result
 
     def verify_title(self, title):

@@ -2,8 +2,6 @@ from flask import jsonify, request
 from json import dumps
 from http import HTTPStatus
 
-from itsdangerous import json
-
 from app.models import Post
 
 def new_request():
@@ -18,7 +16,6 @@ def seach_post(id):
 def create():
     params = new_request()
     post = Post(**params).save_post()
-    #breakpoint()
     post = Post.serialize_id(post)
     return jsonify(post.__dict__), HTTPStatus.OK
 
@@ -42,5 +39,4 @@ def read(id):
 
 def list():
     result = Post.list_all()
-    result = Post.serialize_id(result)
-    return jsonify(result), HTTPStatus.OK
+    return {"msg": result}, HTTPStatus.OK
