@@ -32,6 +32,10 @@ class Post():
         result = db.post.find_one({"id": int(id)})
         return result
 
+    @staticmethod
+    def list_all():
+        result = db.post.find()
+        return result
 
     def verify_title(self, title):
         if len(title) < 3:
@@ -56,7 +60,9 @@ class Post():
             data.update({"_id": str(data["_id"])})
         if type(data) is Post:
             data._id = str(data._id)
-
+        else:
+            for i in data:
+                i.update({"_id": str(i["_id"])})
         return data
     
 

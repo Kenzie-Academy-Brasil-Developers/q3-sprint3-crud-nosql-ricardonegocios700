@@ -1,5 +1,5 @@
 from flask import jsonify
-from app.controllers.post_controller import create, delete, read
+from app.controllers.post_controller import create, delete, read, list
 
 def post_route(app):
     @app.post("/posts")
@@ -18,3 +18,7 @@ def post_route(app):
     def read_post_by_id(id):
         result = read(id)
         return {"msg": result["msg"]}, result["code"]
+
+    @app.get("/posts")
+    def read_posts():
+        return list()
