@@ -7,6 +7,12 @@ from app.models import Post
 def new_request():
     return request.get_json()
 
+def seach_post(id):
+    post = Post.find_post(int(id))
+    post = Post.serialize_id(post)
+    return post
+
+
 def create():
     params = new_request()
     post = Post(**params).save_post()
@@ -15,10 +21,19 @@ def create():
     return jsonify(post.__dict__), HTTPStatus.OK
 
 def delete(id):
-    post = Post.find_post(int(id))
-    post = Post.serialize_id(post)
+    post = seach_post(id)
     try:
         Post.delete_post(post)
     except TypeError:
-        return {"msg": "Registro não encontrado"}
-    return jsonify(post)
+        result = {"msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
+    else:
+        result = {"msg": post, "code": 202}
+    return result
+
+def read(id):
+    result = seach_post(id)
+    if result == None:
+        result = {"msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
+    else:
+        result = {"msg": result, "code": HTTPStatus.OK}
+    return result
