@@ -1,6 +1,5 @@
 from flask import Flask
 
-#from .views import posts as posts_view
 from app import views
 
 

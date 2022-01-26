@@ -23,18 +23,18 @@ def delete(id):
     post = seach_post(id)
     try:
         Post.delete_post(post)
-    except TypeError:
-        result = {"msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
+    except:
+        result = {"type": "error", "msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
     else:
-        result = {"msg": post, "code": 202}
+        result = {"type": "msg", "msg": post, "code": 202}
     return result
 
 def read(id):
     result = seach_post(id)
     if result == None:
-        result = {"msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
+        result = {"type": "error", "msg": "Registro não encontrado", "code": HTTPStatus.NOT_FOUND}
     else:
-        result = {"msg": result, "code": HTTPStatus.OK}
+        result = {"type": "msg", "msg": result, "code": HTTPStatus.OK}
     return result
 
 def list():
@@ -42,13 +42,10 @@ def list():
     return {"msg": result}, HTTPStatus.OK
 
 def update(id):
-    params = new_request()
+    my_json = new_request()
     post = Post.find_post(int(id))
-    new = Post(**post)
-    print("000000000000000000000000000000",params['title'])
-    print("111111111111111111111111111111",type(params))
-    print("222222222222222222222222222222",type(post))
-    print("33333333333333333333333333333333",type(new))
-    print("44444444444444444444444444444444",new)
-    result = new.update_to(params)
-    return {"msg": "result"}
+    if post is None:
+        return {'error': "Tentativa de editar post inexistente"}, HTTPStatus.NOT_FOUND
+    Post.update_to(int(id), my_json)
+    result = seach_post(id)
+    return {'msg': result}, HTTPStatus.OK

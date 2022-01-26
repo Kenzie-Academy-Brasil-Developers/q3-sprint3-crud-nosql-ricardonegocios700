@@ -14,32 +14,22 @@ class Post():
         self.author: str = kwargs["author"]
         self.tags: list[:str] = kwargs["tags"]
         self.content: str = kwargs["content"]
-        #TODO verificar com calma as datas
-        # self.created_at: date = kwargs["created_at"] or datetime.now()
-        # self.updated_at: date = kwargs["updated_at"] or datetime.now()
 
     def save_post(self):
+        self.created_at = datetime.today()
+        self.updated_at = datetime.today()
         db.post.insert_one(self.__dict__)
         return self
 
-    def update_to(self, params):
-        print("================================", self.__dict__)
-        if params['title'] != self.title:
-            self.title = params['title']
-        if params['author'] != self.author:
-            self.author = params['author']
-        if params['tags'] != self.tags:
-            self.tags = params['tags']
-        if params['content'] != self.content:
-            self.content = params['content']
-        db.post.update_one(self.__dict__)
-        #return self
+    @staticmethod
+    def update_to(id, my_json):
+        my_json["updated_at"] = datetime.today()
+        db.post.update_one({"id": id}, {"$set": my_json})
 
     @staticmethod
     def delete_post(post):
         db.post.delete_one({"id": post["id"]})
-    # def delete_post(post):
-    #     db.post.delete_one(post)
+        # db.post.delete_one(post) # funcionava e parou de funcinar...
 
     @staticmethod
     def find_post(id):
@@ -49,9 +39,6 @@ class Post():
     @staticmethod
     def list_all():
         working = db.post.find()
-        #TODO não consegui usar o serialize_id() no controller
-        #TODO mantinha como um objeto do mongo e não interava no controller
-        #TODO https://github.com/Kenzie-Academy-Brasil-Developers/q3-demos-turma7/blob/master/sprint3/demo7/app/models/dev_model.py
         result = []
         for w in working:
             w.update({"_id": str(w["_id"])})
@@ -83,26 +70,3 @@ class Post():
             data._id = str(data._id)
         return data
     
-
-# p = Post(
-#     **{
-#         "id": 1,
-#         "title": "Titulo",
-#         "author": "Ricardo Silva",
-#         "tags": ["python", "mongoDB", "postgreSQL"],
-#         "content": "Aqui vai um texto, com o conteudo da postagem"
-#     }
-# )
-# print(type(p))
-# print(p)
-# print(p.__dict__)
-# print(p.save_post())
-
-# dict_object = {
-#         "id": 1,
-#         "title": "Titulo",
-#         "author": "Ricardo Silva",
-#         "tags": ["python", "mongoDB", "postgreSQL"],
-#         "content": "Aqui vai um texto, com o conteudo da postagem"
-#     }
-#p = Post(**dict_object)
