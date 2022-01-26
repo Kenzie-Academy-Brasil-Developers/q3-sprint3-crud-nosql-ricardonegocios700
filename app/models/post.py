@@ -1,3 +1,5 @@
+from genericpath import exists
+from turtle import title
 import pymongo
 from datetime import date, datetime
 
@@ -20,11 +22,24 @@ class Post():
         db.post.insert_one(self.__dict__)
         return self
 
+    def update_to(self, params):
+        print("================================", self.__dict__)
+        if params['title'] != self.title:
+            self.title = params['title']
+        if params['author'] != self.author:
+            self.author = params['author']
+        if params['tags'] != self.tags:
+            self.tags = params['tags']
+        if params['content'] != self.content:
+            self.content = params['content']
+        db.post.update_one(self.__dict__)
+        #return self
+
     @staticmethod
-    # def delete_post(post):
-    #     db.post.delete_one(post)
     def delete_post(post):
         db.post.delete_one({"id": post["id"]})
+    # def delete_post(post):
+    #     db.post.delete_one(post)
 
     @staticmethod
     def find_post(id):
@@ -66,9 +81,6 @@ class Post():
             data.update({"_id": str(data["_id"])})
         if type(data) is Post:
             data._id = str(data._id)
-        else:
-            for i in data:
-                i.update({"_id": str(i["_id"])})
         return data
     
 

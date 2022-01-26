@@ -1,5 +1,5 @@
 from flask import jsonify
-from app.controllers.post_controller import create, delete, read, list
+from app.controllers.post_controller import create, delete, read, list, update
 
 def post_route(app):
     @app.post("/posts")
@@ -22,3 +22,8 @@ def post_route(app):
     @app.get("/posts")
     def read_posts():
         return list()
+
+    @app.patch("/posts/<id>")
+    def update_post(id):
+        # return {"msg": f"update {id}"}
+        return update(id)
