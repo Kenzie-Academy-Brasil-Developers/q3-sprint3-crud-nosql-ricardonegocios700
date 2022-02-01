@@ -1,5 +1,3 @@
-from genericpath import exists
-from turtle import title
 import pymongo
 from datetime import date, datetime
 
